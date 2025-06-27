@@ -268,3 +268,9 @@ downloaded_models/
 
 # Task tracking markdown (contains development notes)
 TODO.md
+WHERE_WE_LEFT_OFF.md
+
+profiling/OLD_layer_profiler.py
+test_updated_workers
+verify_metrics
+single_test_metrics

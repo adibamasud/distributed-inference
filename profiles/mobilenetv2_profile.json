@@ -1,0 +1,2983 @@
+{
+  "model_name": "mobilenetv2",
+  "layer_profiles": [
+    {
+      "layer_name": "features.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.13774740509688854,
+      "memory_usage_mb": 0.93515625,
+      "flops": 10838016,
+      "input_shape": [
+        1,
+        3,
+        224,
+        224
+      ],
+      "output_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "parameters": 864,
+      "cpu_utilization": 17.259999999999998
+    },
+    {
+      "layer_name": "features.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.021596398437395692,
+      "memory_usage_mb": 0.0,
+      "flops": 802816,
+      "input_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "parameters": 64,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.010637997183948755,
+      "memory_usage_mb": 0.0,
+      "flops": 401408,
+      "input_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.1.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.21295800106599927,
+      "memory_usage_mb": 0.14765625,
+      "flops": 115605504,
+      "input_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "parameters": 288,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.1.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.0337188015691936,
+      "memory_usage_mb": 0.0,
+      "flops": 802816,
+      "input_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "parameters": 64,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.1.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.010134204057976604,
+      "memory_usage_mb": 0.0,
+      "flops": 401408,
+      "input_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.1.conv.1",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.13596300850622356,
+      "memory_usage_mb": 0.0,
+      "flops": 6422528,
+      "input_shape": [
+        1,
+        32,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        16,
+        112,
+        112
+      ],
+      "parameters": 512,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.1.conv.2",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.02389199798926711,
+      "memory_usage_mb": 0.0,
+      "flops": 401408,
+      "input_shape": [
+        1,
+        16,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        16,
+        112,
+        112
+      ],
+      "parameters": 32,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.2.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.4104279913008213,
+      "memory_usage_mb": 0.39375,
+      "flops": 19267584,
+      "input_shape": [
+        1,
+        16,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        96,
+        112,
+        112
+      ],
+      "parameters": 1536,
+      "cpu_utilization": 36.68
+    },
+    {
+      "layer_name": "features.2.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.13491379213519394,
+      "memory_usage_mb": 1.18125,
+      "flops": 2408448,
+      "input_shape": [
+        1,
+        96,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        96,
+        112,
+        112
+      ],
+      "parameters": 192,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.2.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.015666004037484527,
+      "memory_usage_mb": 0.0,
+      "flops": 1204224,
+      "input_shape": [
+        1,
+        96,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        96,
+        112,
+        112
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.2.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.28782859444618225,
+      "memory_usage_mb": 0.39375,
+      "flops": 260112384,
+      "input_shape": [
+        1,
+        96,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        96,
+        56,
+        56
+      ],
+      "parameters": 864,
+      "cpu_utilization": 30.0
+    },
+    {
+      "layer_name": "features.2.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.02738219336606562,
+      "memory_usage_mb": 0.0,
+      "flops": 602112,
+      "input_shape": [
+        1,
+        96,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        96,
+        56,
+        56
+      ],
+      "parameters": 192,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.2.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.010437995661050081,
+      "memory_usage_mb": 0.0,
+      "flops": 301056,
+      "input_shape": [
+        1,
+        96,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        96,
+        56,
+        56
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.2.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.1329377933871001,
+      "memory_usage_mb": 0.0,
+      "flops": 7225344,
+      "input_shape": [
+        1,
+        96,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        24,
+        56,
+        56
+      ],
+      "parameters": 2304,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.2.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.01690619974397123,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        24,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        24,
+        56,
+        56
+      ],
+      "parameters": 48,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.3.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.16501359641551971,
+      "memory_usage_mb": 0.0,
+      "flops": 10838016,
+      "input_shape": [
+        1,
+        24,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "parameters": 3456,
+      "cpu_utilization": 40.0
+    },
+    {
+      "layer_name": "features.3.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.037109991535544395,
+      "memory_usage_mb": 0.0,
+      "flops": 903168,
+      "input_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "parameters": 288,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.3.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.010061997454613447,
+      "memory_usage_mb": 0.0,
+      "flops": 451584,
+      "input_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.3.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.2172199951019138,
+      "memory_usage_mb": 0.0984375,
+      "flops": 585252864,
+      "input_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "parameters": 1296,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.3.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.06589660188183188,
+      "memory_usage_mb": 0.6890625,
+      "flops": 903168,
+      "input_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "parameters": 288,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.3.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.010022195056080818,
+      "memory_usage_mb": 0.0,
+      "flops": 451584,
+      "input_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.3.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.17120740958489478,
+      "memory_usage_mb": 0.0,
+      "flops": 10838016,
+      "input_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        24,
+        56,
+        56
+      ],
+      "parameters": 3456,
+      "cpu_utilization": 40.0
+    },
+    {
+      "layer_name": "features.3.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.016885990044102073,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        24,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        24,
+        56,
+        56
+      ],
+      "parameters": 48,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.4.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.19885979709215462,
+      "memory_usage_mb": 0.73828125,
+      "flops": 10838016,
+      "input_shape": [
+        1,
+        24,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "parameters": 3456,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.4.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.03799620317295194,
+      "memory_usage_mb": 0.0,
+      "flops": 903168,
+      "input_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "parameters": 288,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.4.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.010092399315908551,
+      "memory_usage_mb": 0.0,
+      "flops": 451584,
+      "input_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.4.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.12531940592452884,
+      "memory_usage_mb": 0.0,
+      "flops": 146313216,
+      "input_shape": [
+        1,
+        144,
+        56,
+        56
+      ],
+      "output_shape": [
+        1,
+        144,
+        28,
+        28
+      ],
+      "parameters": 1296,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.4.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.02012199256569147,
+      "memory_usage_mb": 0.0,
+      "flops": 225792,
+      "input_shape": [
+        1,
+        144,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        144,
+        28,
+        28
+      ],
+      "parameters": 288,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.4.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.011707993689924479,
+      "memory_usage_mb": 0.0,
+      "flops": 112896,
+      "input_shape": [
+        1,
+        144,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        144,
+        28,
+        28
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.4.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07507260306738317,
+      "memory_usage_mb": 0.0,
+      "flops": 3612672,
+      "input_shape": [
+        1,
+        144,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "parameters": 4608,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.4.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.014242407632991672,
+      "memory_usage_mb": 0.0,
+      "flops": 50176,
+      "input_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "parameters": 64,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.5.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07987060816958547,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 6144,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.5.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.021094002295285463,
+      "memory_usage_mb": 0.0,
+      "flops": 301056,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 384,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.5.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.010118191130459309,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.5.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.10268500191159546,
+      "memory_usage_mb": 0.0,
+      "flops": 260112384,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 1728,
+      "cpu_utilization": 26.68
+    },
+    {
+      "layer_name": "features.5.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.02151820226572454,
+      "memory_usage_mb": 0.0,
+      "flops": 301056,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 384,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.5.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009984400821849704,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.5.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07793100667186081,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "parameters": 6144,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.5.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.01414640573784709,
+      "memory_usage_mb": 0.0,
+      "flops": 50176,
+      "input_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "parameters": 64,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.6.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.0811269972473383,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 6144,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.6.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.021266203839331865,
+      "memory_usage_mb": 0.0,
+      "flops": 301056,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 384,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.6.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.010050396667793393,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.6.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.10213700006715953,
+      "memory_usage_mb": 0.0,
+      "flops": 260112384,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 1728,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.6.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.02179620787501335,
+      "memory_usage_mb": 0.0,
+      "flops": 301056,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 384,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.6.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.01005401136353612,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.6.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07706080214120448,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "parameters": 6144,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.6.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.01425420050509274,
+      "memory_usage_mb": 0.0,
+      "flops": 50176,
+      "input_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "parameters": 64,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.7.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07577880751341581,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        32,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 6144,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.7.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.018760201055556536,
+      "memory_usage_mb": 0.0,
+      "flops": 301056,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 384,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.7.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009680201765149832,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.7.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.08073280332610011,
+      "memory_usage_mb": 0.0,
+      "flops": 65028096,
+      "input_shape": [
+        1,
+        192,
+        28,
+        28
+      ],
+      "output_shape": [
+        1,
+        192,
+        14,
+        14
+      ],
+      "parameters": 1728,
+      "cpu_utilization": 40.0
+    },
+    {
+      "layer_name": "features.7.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.015628401888534427,
+      "memory_usage_mb": 0.0,
+      "flops": 75264,
+      "input_shape": [
+        1,
+        192,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        192,
+        14,
+        14
+      ],
+      "parameters": 384,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.7.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.00858000130392611,
+      "memory_usage_mb": 0.0,
+      "flops": 37632,
+      "input_shape": [
+        1,
+        192,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        192,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.7.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.06496479036286473,
+      "memory_usage_mb": 0.0,
+      "flops": 2408448,
+      "input_shape": [
+        1,
+        192,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "parameters": 12288,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.7.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.014278199523687363,
+      "memory_usage_mb": 0.0,
+      "flops": 25088,
+      "input_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "parameters": 128,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.8.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.050774007104337215,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 24576,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.8.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.017168204067274928,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 768,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.8.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.00933200353756547,
+      "memory_usage_mb": 0.0,
+      "flops": 75264,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.8.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07744659087620676,
+      "memory_usage_mb": 0.0,
+      "flops": 260112384,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 3456,
+      "cpu_utilization": 13.34
+    },
+    {
+      "layer_name": "features.8.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.018316198838874698,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 768,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.8.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009122007759287953,
+      "memory_usage_mb": 0.0,
+      "flops": 75264,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.8.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07795680430717766,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "parameters": 24576,
+      "cpu_utilization": 40.0
+    },
+    {
+      "layer_name": "features.8.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.014124397421255708,
+      "memory_usage_mb": 0.0,
+      "flops": 25088,
+      "input_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "parameters": 128,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.9.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.0488220015540719,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 24576,
+      "cpu_utilization": 13.34
+    },
+    {
+      "layer_name": "features.9.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.016425998182967305,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 768,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.9.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.00925619387999177,
+      "memory_usage_mb": 0.0,
+      "flops": 75264,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.9.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07907680119387805,
+      "memory_usage_mb": 0.0,
+      "flops": 260112384,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 3456,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.9.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.017944193677976727,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 768,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.9.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.008999998681247234,
+      "memory_usage_mb": 0.0,
+      "flops": 75264,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.9.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07549659931100905,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "parameters": 24576,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.9.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.014162197476252913,
+      "memory_usage_mb": 0.0,
+      "flops": 25088,
+      "input_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "parameters": 128,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.10.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.04865999799221754,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 24576,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.10.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.016664399299770594,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 768,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.10.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009122001938521862,
+      "memory_usage_mb": 0.0,
+      "flops": 75264,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.10.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07742280140519142,
+      "memory_usage_mb": 0.0,
+      "flops": 260112384,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 3456,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.10.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.018256192561239004,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 768,
+      "cpu_utilization": 13.34
+    },
+    {
+      "layer_name": "features.10.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009307998698204756,
+      "memory_usage_mb": 0.0,
+      "flops": 75264,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.10.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07568880100734532,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "parameters": 24576,
+      "cpu_utilization": 13.34
+    },
+    {
+      "layer_name": "features.10.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.013965996913611889,
+      "memory_usage_mb": 0.0,
+      "flops": 25088,
+      "input_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "parameters": 128,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.11.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.04910840070806444,
+      "memory_usage_mb": 0.0,
+      "flops": 4816896,
+      "input_shape": [
+        1,
+        64,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 24576,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.11.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.01611599582247436,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 768,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.11.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009466195479035378,
+      "memory_usage_mb": 0.0,
+      "flops": 75264,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.11.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07618859526701272,
+      "memory_usage_mb": 0.0,
+      "flops": 260112384,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 3456,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.11.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.017752399435266852,
+      "memory_usage_mb": 0.0,
+      "flops": 150528,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 768,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.11.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.00945419305935502,
+      "memory_usage_mb": 0.0,
+      "flops": 75264,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 13.34
+    },
+    {
+      "layer_name": "features.11.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.08807700360193849,
+      "memory_usage_mb": 0.0,
+      "flops": 7225344,
+      "input_shape": [
+        1,
+        384,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "parameters": 36864,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.11.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.014962191926315427,
+      "memory_usage_mb": 0.0,
+      "flops": 37632,
+      "input_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "parameters": 192,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.12.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.08338679908774793,
+      "memory_usage_mb": 0.0,
+      "flops": 10838016,
+      "input_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 55296,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.12.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.017673999536782503,
+      "memory_usage_mb": 0.0,
+      "flops": 225792,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 1152,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.12.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009254011092707515,
+      "memory_usage_mb": 0.0,
+      "flops": 112896,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.12.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.08180480217561126,
+      "memory_usage_mb": 0.0,
+      "flops": 585252864,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 5184,
+      "cpu_utilization": 13.34
+    },
+    {
+      "layer_name": "features.12.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.01947219716385007,
+      "memory_usage_mb": 0.0,
+      "flops": 225792,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 1152,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.12.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.00961000332608819,
+      "memory_usage_mb": 0.0,
+      "flops": 112896,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.12.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.10464099468663335,
+      "memory_usage_mb": 0.0,
+      "flops": 10838016,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "parameters": 55296,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.12.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.014751998241990805,
+      "memory_usage_mb": 0.0,
+      "flops": 37632,
+      "input_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "parameters": 192,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.13.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.082532805390656,
+      "memory_usage_mb": 0.0,
+      "flops": 10838016,
+      "input_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 55296,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.13.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.01729239011183381,
+      "memory_usage_mb": 0.0,
+      "flops": 225792,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 1152,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.13.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009263999527320266,
+      "memory_usage_mb": 0.0,
+      "flops": 112896,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.13.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.08338060579262674,
+      "memory_usage_mb": 0.0,
+      "flops": 585252864,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 5184,
+      "cpu_utilization": 13.34
+    },
+    {
+      "layer_name": "features.13.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.01891659921966493,
+      "memory_usage_mb": 0.0,
+      "flops": 225792,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 1152,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.13.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009551987750455737,
+      "memory_usage_mb": 0.0,
+      "flops": 112896,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.13.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.10367700597271323,
+      "memory_usage_mb": 0.0,
+      "flops": 10838016,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "parameters": 55296,
+      "cpu_utilization": 33.339999999999996
+    },
+    {
+      "layer_name": "features.13.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.017968006432056427,
+      "memory_usage_mb": 0.0,
+      "flops": 37632,
+      "input_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "parameters": 192,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.14.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.08252080297097564,
+      "memory_usage_mb": 0.0,
+      "flops": 10838016,
+      "input_shape": [
+        1,
+        96,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 55296,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.14.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.017234391998499632,
+      "memory_usage_mb": 0.0,
+      "flops": 225792,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 1152,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.14.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.008886196883395314,
+      "memory_usage_mb": 0.0,
+      "flops": 112896,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.14.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07102059898898005,
+      "memory_usage_mb": 0.0,
+      "flops": 146313216,
+      "input_shape": [
+        1,
+        576,
+        14,
+        14
+      ],
+      "output_shape": [
+        1,
+        576,
+        7,
+        7
+      ],
+      "parameters": 5184,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.14.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.018656201427802444,
+      "memory_usage_mb": 0.0,
+      "flops": 56448,
+      "input_shape": [
+        1,
+        576,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        576,
+        7,
+        7
+      ],
+      "parameters": 1152,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.14.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.007608003215864301,
+      "memory_usage_mb": 0.0,
+      "flops": 28224,
+      "input_shape": [
+        1,
+        576,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        576,
+        7,
+        7
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.14.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07528660353273153,
+      "memory_usage_mb": 0.0,
+      "flops": 4515840,
+      "input_shape": [
+        1,
+        576,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "parameters": 92160,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.14.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.014181999722495675,
+      "memory_usage_mb": 0.0,
+      "flops": 15680,
+      "input_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "parameters": 320,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.15.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07357680005952716,
+      "memory_usage_mb": 0.0,
+      "flops": 7526400,
+      "input_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 153600,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.15.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.018437998369336128,
+      "memory_usage_mb": 0.0,
+      "flops": 94080,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 1920,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.15.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009005994070321321,
+      "memory_usage_mb": 0.0,
+      "flops": 47040,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.15.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.06442859885282815,
+      "memory_usage_mb": 0.0,
+      "flops": 406425600,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 8640,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.15.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.01874819863587618,
+      "memory_usage_mb": 0.0,
+      "flops": 94080,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 1920,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.15.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.008655997226014733,
+      "memory_usage_mb": 0.0,
+      "flops": 47040,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.15.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.09053500252775848,
+      "memory_usage_mb": 0.0,
+      "flops": 7526400,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "parameters": 153600,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.15.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.014626001939177513,
+      "memory_usage_mb": 0.0,
+      "flops": 15680,
+      "input_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "parameters": 320,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.16.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.07315659895539284,
+      "memory_usage_mb": 0.0,
+      "flops": 7526400,
+      "input_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 153600,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.16.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.018072000239044428,
+      "memory_usage_mb": 0.0,
+      "flops": 94080,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 1920,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.16.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.00861600274220109,
+      "memory_usage_mb": 0.0,
+      "flops": 47040,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.16.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.06499440059997141,
+      "memory_usage_mb": 0.0,
+      "flops": 406425600,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 8640,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.16.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.018821994308382273,
+      "memory_usage_mb": 0.0,
+      "flops": 94080,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 1920,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.16.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009334203787147999,
+      "memory_usage_mb": 0.0,
+      "flops": 47040,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 0,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.16.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.091418600641191,
+      "memory_usage_mb": 0.0,
+      "flops": 7526400,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "parameters": 153600,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.16.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.014274194836616516,
+      "memory_usage_mb": 0.0,
+      "flops": 15680,
+      "input_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "parameters": 320,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.17.conv.0.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.0740805990062654,
+      "memory_usage_mb": 0.0,
+      "flops": 7526400,
+      "input_shape": [
+        1,
+        160,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 153600,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.17.conv.0.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.018198200268670917,
+      "memory_usage_mb": 0.0,
+      "flops": 94080,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 1920,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.17.conv.0.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.008868006989359856,
+      "memory_usage_mb": 0.0,
+      "flops": 47040,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.17.conv.1.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.06376859964802861,
+      "memory_usage_mb": 0.0,
+      "flops": 406425600,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 8640,
+      "cpu_utilization": 10.0
+    },
+    {
+      "layer_name": "features.17.conv.1.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.01850400003604591,
+      "memory_usage_mb": 0.0,
+      "flops": 94080,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 1920,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.17.conv.1.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.00891599920578301,
+      "memory_usage_mb": 0.0,
+      "flops": 47040,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "parameters": 0,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.17.conv.2",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.11634500115178525,
+      "memory_usage_mb": 0.0,
+      "flops": 15052800,
+      "input_shape": [
+        1,
+        960,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        320,
+        7,
+        7
+      ],
+      "parameters": 307200,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.17.conv.3",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.015344202984124422,
+      "memory_usage_mb": 0.0,
+      "flops": 31360,
+      "input_shape": [
+        1,
+        320,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        320,
+        7,
+        7
+      ],
+      "parameters": 640,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.18.0",
+      "layer_type": "Conv2d",
+      "execution_time_ms": 0.16436539590358734,
+      "memory_usage_mb": 0.0,
+      "flops": 20070400,
+      "input_shape": [
+        1,
+        320,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        1280,
+        7,
+        7
+      ],
+      "parameters": 409600,
+      "cpu_utilization": 20.0
+    },
+    {
+      "layer_name": "features.18.1",
+      "layer_type": "BatchNorm2d",
+      "execution_time_ms": 0.01992200268432498,
+      "memory_usage_mb": 0.0,
+      "flops": 125440,
+      "input_shape": [
+        1,
+        1280,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        1280,
+        7,
+        7
+      ],
+      "parameters": 2560,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "features.18.2",
+      "layer_type": "ReLU6",
+      "execution_time_ms": 0.009233999298885465,
+      "memory_usage_mb": 0.0,
+      "flops": 62720,
+      "input_shape": [
+        1,
+        1280,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        1280,
+        7,
+        7
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "functional.adaptive_avg_pool2d",
+      "layer_type": "adaptive_avg_pool2d",
+      "execution_time_ms": 0.013437989400699735,
+      "memory_usage_mb": 0.0,
+      "flops": 62720,
+      "input_shape": [
+        1,
+        1280,
+        7,
+        7
+      ],
+      "output_shape": [
+        1,
+        1280,
+        1,
+        1
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "classifier.0",
+      "layer_type": "Dropout",
+      "execution_time_ms": 0.0045539927668869495,
+      "memory_usage_mb": 0.0,
+      "flops": 1280,
+      "input_shape": [
+        1,
+        1280
+      ],
+      "output_shape": [
+        1,
+        1280
+      ],
+      "parameters": 0,
+      "cpu_utilization": 0.0
+    },
+    {
+      "layer_name": "classifier.1",
+      "layer_type": "Linear",
+      "execution_time_ms": 0.011318008182570338,
+      "memory_usage_mb": 0.0,
+      "flops": 12810,
+      "input_shape": [
+        1,
+        1280
+      ],
+      "output_shape": [
+        1,
+        10
+      ],
+      "parameters": 12810,
+      "cpu_utilization": 20.0
+    }
+  ],
+  "total_time_ms": 6.99024495552294,
+  "total_memory_mb": 4.57734375,
+  "total_flops": 5567398794,
+  "total_parameters": 2236682
+}

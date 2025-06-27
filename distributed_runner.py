@@ -146,33 +146,38 @@ class EnhancedDistributedModel(nn.Module):
         # Save profile for analysis
         profile_path = f"./profiles/{self.model_type}_profile.json"
         os.makedirs("./profiles", exist_ok=True)
-        self.model_profile.save_to_json(profile_path)
+        self.model_profile.save_to_file(profile_path)
         
         self.logger.info(f"Model profile saved to: {profile_path}")
         self.logger.info(f"Total model execution time: {self.model_profile.total_time_ms:.2f}ms")
         self.logger.info(f"Total model parameters: {self.model_profile.total_parameters:,}")
     
     def _split_model(self) -> List[nn.Module]:
-        """Split the model using intelligent or traditional methods."""
+        """Split the model using intelligent, block-level, or traditional methods."""
         if self.use_intelligent_splitting and self.model_profile:
-            self.logger.info("Using intelligent splitting based on profiling data")
-            
-            # Use intelligent splitter
-            shards, self.split_config = split_model_intelligently(
-                self.original_model, 
-                self.model_profile, 
-                self.num_splits,
-                network_config={
-                    'communication_latency_ms': 5.0,  # Estimate for Pi network
-                    'network_bandwidth_mbps': 100.0   # Estimate for WiFi
-                }
-            )
-            
-            self.logger.info(f"Intelligent split created {len(shards)} shards")
-            self.logger.info(f"Load balance score: {self.split_config.load_balance_score:.4f}")
-            self.logger.info(f"Estimated communication overhead: {self.split_config.estimated_communication_overhead_ms:.2f}ms")
-            
-            return shards
+            # Try block-level splitting first (like reference implementation)
+            if hasattr(self.original_model, 'features') and hasattr(self.original_model, 'classifier'):
+                self.logger.info("Using block-level splitting (reference implementation style)")
+                return self._split_model_block_level()
+            else:
+                self.logger.info("Using intelligent splitting based on profiling data")
+                
+                # Use intelligent splitter
+                shards, self.split_config = split_model_intelligently(
+                    self.original_model, 
+                    self.model_profile, 
+                    self.num_splits,
+                    network_config={
+                        'communication_latency_ms': 200.0,  # Realistic RPC + serialization latency
+                        'network_bandwidth_mbps': 3.5       # Measured effective bandwidth between Pis
+                    }
+                )
+                
+                self.logger.info(f"Intelligent split created {len(shards)} shards")
+                self.logger.info(f"Load balance score: {self.split_config.load_balance_score:.4f}")
+                self.logger.info(f"Estimated communication overhead: {self.split_config.estimated_communication_overhead_ms:.2f}ms")
+                
+                return shards
         else:
             self.logger.info("Using traditional manual splitting")
             # Fall back to the original manual splitting from the base script
@@ -192,6 +197,51 @@ class EnhancedDistributedModel(nn.Module):
             self.logger.error(f"Failed to use traditional splitting: {e}")
             # Fallback: just return the whole model as one shard
             return [self.original_model]
+    
+    def _split_model_block_level(self) -> List[nn.Module]:
+        """Block-level model splitting (like reference implementation)."""
+        feature_blocks = list(self.original_model.features.children())
+        total_blocks = len(feature_blocks)
+        
+        self.logger.info(f"Model has {total_blocks} feature blocks")
+        
+        # Calculate split point based on number of splits requested
+        if self.num_splits == 1:
+            # For MobileNetV2: split at block 8 (like reference implementation)
+            if self.model_type.lower() == 'mobilenetv2':
+                split_at_block = 8
+            else:
+                # For other models, split roughly in the middle
+                split_at_block = total_blocks // 2
+        else:
+            # For multiple splits, distribute blocks evenly
+            split_at_block = total_blocks // (self.num_splits + 1)
+        
+        self.logger.info(f"Splitting at block {split_at_block} (reference style)")
+        
+        # Create shard 1: first part of features
+        shard1_modules = feature_blocks[:split_at_block]
+        shard1 = nn.Sequential(*shard1_modules)
+        
+        # Create shard 2: remaining features + pooling + classifier
+        shard2_modules = feature_blocks[split_at_block:]
+        shard2_modules.append(nn.AdaptiveAvgPool2d((1, 1)))
+        shard2_modules.append(nn.Flatten())
+        shard2_modules.append(self.original_model.classifier)
+        shard2 = nn.Sequential(*shard2_modules)
+        
+        # Log partition details (for TODO item #2)
+        shard1_params = sum(p.numel() for p in shard1.parameters())
+        shard2_params = sum(p.numel() for p in shard2.parameters())
+        total_params = shard1_params + shard2_params
+        
+        self.logger.info(f"Shard 1: Adding explicit AdaptiveAvgPool2d and Flatten for features→classifier transition")
+        self.logger.info(f"Created 2 shards from block-level split")
+        self.logger.info(f"Shard 1 parameters: {shard1_params:,} ({shard1_params/total_params*100:.1f}%)")
+        self.logger.info(f"Shard 2 parameters: {shard2_params:,} ({shard2_params/total_params*100:.1f}%)")
+        self.logger.info(f"Split ratio: Shard1={shard1_params/total_params*100:.1f}%, Shard2={shard2_params/total_params*100:.1f}%")
+        
+        return [shard1, shard2]
     
     def _deploy_shards(self) -> List[RRef]:
         """Deploy shards to worker nodes."""
@@ -549,7 +599,7 @@ def main():
         num_classes=args.num_classes,
         dataset=args.dataset,
         num_test_samples=args.num_test_samples,
-        num_splits=args.num_partitions,
+        num_splits=args.num_partitions - 1,  # Convert partitions to split points
         metrics_dir=args.metrics_dir,
         use_intelligent_splitting=args.use_intelligent_splitting,
         use_pipelining=args.use_pipelining,

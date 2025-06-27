@@ -288,6 +288,16 @@ class IntelligentSplitter:
         current_layer = layer_profiles[layer_idx]
         next_layer = layer_profiles[layer_idx + 1] if layer_idx + 1 < len(layer_profiles) else None
         
+        # NEVER split functional operations - they don't exist as nn.Modules
+        if 'functional.' in current_layer.layer_name:
+            return False
+        
+        # NEVER split before functional operations in critical sequences
+        if next_layer and 'functional.' in next_layer.layer_name:
+            # Check if this creates a problematic functional sequence split
+            if any(func_op in next_layer.layer_name for func_op in ['adaptive_avg_pool2d', 'flatten']):
+                return False
+        
         # Don't split within feature blocks or between related operations
         if self._layers_should_stay_together(current_layer, next_layer):
             return False
@@ -303,11 +313,11 @@ class IntelligentSplitter:
         current_name = current.layer_name
         next_name = next.layer_name
         
-        # Keep batch norm with its preceding layer
+        # Keep batch norm with its preceding layer (Conv-BN coupling)
         if 'bn' in next_name.lower() or 'batchnorm' in next_name.lower():
             return True
         
-        # Keep activation functions with their preceding layer
+        # Keep activation functions with their preceding layer (BN-Activation coupling)
         if any(act in next_name.lower() for act in ['relu', 'sigmoid', 'tanh', 'gelu']):
             return True
         
@@ -315,7 +325,11 @@ class IntelligentSplitter:
         if 'dropout' in next_name.lower():
             return True
         
-        # Keep consecutive layers in the same feature block together
+        # Keep functional operations with their preceding layers
+        if 'functional.' in next_name:
+            return True
+        
+        # Keep consecutive layers in the same architectural block together
         if ('features' in current_name and 'features' in next_name and
             self._same_feature_block(current_name, next_name)):
             return True
@@ -654,6 +668,11 @@ class IntelligentSplitter:
             for layer_idx in layer_indices:
                 if layer_idx < len(layer_names):
                     layer_name = layer_names[layer_idx]
+                    # Skip functional operations - they don't exist as nn.Modules
+                    if 'functional.' in layer_name:
+                        self.logger.debug(f"Skipping functional operation in shard creation: {layer_name}")
+                        continue
+                    
                     if layer_name in module_dict:
                         shard_modules.append(module_dict[layer_name])
                     else:
