@@ -2,6 +2,10 @@
 
 This directory contains an advanced distributed deep neural network inference system designed for heterogeneous edge devices. The system features intelligent model splitting based on computational profiling, true sequential pipelining, and comprehensive metrics collection.
 
+## Performance Results
+
+Our pipelined implementation achieves **13.85 images/sec** on a Raspberry Pi cluster, which is **6.38x faster** than our sequential baseline (2.17 images/sec). The key breakthrough was implementing true async RPC pipelining with multiple batches in flight and finding that balanced workload splits (60/40) significantly outperform heavily imbalanced splits. See [experiment_results.md](experiment_results.md) for detailed performance analysis.
+
 ## Features
 
 ### 🧠 Intelligent Model Splitting

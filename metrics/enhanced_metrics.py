@@ -297,9 +297,9 @@ class EnhancedMetricsCollector:
         
         self.logger.debug(f"Recorded stage {stage_name} for batch {batch_id}: {processing_time_ms:.2f}ms")
     
-    def record_network_metrics(self, latency_ms: float, throughput_mbps: float, 
+    def record_network_metrics(self, rpc_total_ms: float, network_overhead_ms: float, 
                              device_id: Optional[str] = None):
-        """Record network communication metrics."""
+        """Record RPC metrics (total time and estimated network overhead)."""
         target_device = device_id or self.device_id
         
         if target_device not in self.device_metrics:
@@ -310,10 +310,11 @@ class EnhancedMetricsCollector:
             )
         
         device = self.device_metrics[target_device]
-        device.network_latency_history.append(latency_ms)
-        device.throughput_history.append(throughput_mbps)
+        device.network_latency_history.append(rpc_total_ms)  # Total RPC time
+        device.throughput_history.append(network_overhead_ms)  # Estimated network overhead
         
-        self.logger.debug(f"Network metrics - Latency: {latency_ms:.2f}ms, Throughput: {throughput_mbps:.2f}Mbps")
+        computation_ms = rpc_total_ms - network_overhead_ms
+        self.logger.debug(f"RPC metrics - Total: {rpc_total_ms:.2f}ms (Network: {network_overhead_ms:.2f}ms, Computation: {computation_ms:.2f}ms)")
     
     def _write_batch_to_csv(self, batch: BatchMetrics, ips: float):
         """Write batch metrics to CSV."""
@@ -371,8 +372,8 @@ class EnhancedMetricsCollector:
         # Calculate averages
         avg_memory = sum(device.memory_usage_history) / len(device.memory_usage_history) if device.memory_usage_history else 0.0
         avg_cpu = sum(device.cpu_usage_history) / len(device.cpu_usage_history) if device.cpu_usage_history else 0.0
-        avg_latency = sum(device.network_latency_history) / len(device.network_latency_history) if device.network_latency_history else 0.0
-        avg_throughput = sum(device.throughput_history) / len(device.throughput_history) if device.throughput_history else 0.0
+        avg_rpc_total_ms = sum(device.network_latency_history) / len(device.network_latency_history) if device.network_latency_history else 0.0
+        avg_network_overhead_ms = sum(device.throughput_history) / len(device.throughput_history) if device.throughput_history else 0.0
         
         return {
             'device_id': device.device_id,
@@ -384,8 +385,8 @@ class EnhancedMetricsCollector:
             'average_processing_time_ms': device.average_processing_time_ms,
             'avg_memory_usage_mb': avg_memory,
             'avg_cpu_usage_percent': avg_cpu,
-            'avg_network_latency_ms': avg_latency,
-            'avg_throughput_mbps': avg_throughput
+            'avg_network_latency_ms': avg_rpc_total_ms,  # This is really total RPC time
+            'avg_throughput_mbps': avg_network_overhead_ms  # This is really network overhead in ms
         }
     
     def write_device_summary_to_csv(self, model_name: str = ""):

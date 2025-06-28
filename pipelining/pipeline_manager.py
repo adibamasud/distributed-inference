@@ -403,7 +403,7 @@ class PipelineManager:
         return batch
     
     def process_batch_rpc(self, data: torch.Tensor, labels: Optional[torch.Tensor] = None) -> torch.Tensor:
-        """Process a batch through the RPC pipeline."""
+        """Process a batch through the RPC pipeline (non-pipelined for compatibility)."""
         batch_id = self.batch_counter
         self.batch_counter += 1
         
@@ -430,6 +430,116 @@ class PipelineManager:
         
         self.total_batches_completed += 1
         return current_data
+    
+    def start_batch_rpc_pipelined(self, data: torch.Tensor, labels: Optional[torch.Tensor] = None) -> int:
+        """Start processing a batch through the pipelined RPC system."""
+        batch_id = self.batch_counter
+        self.batch_counter += 1
+        
+        # Create batch object
+        batch = PipelineBatch(
+            batch_id=batch_id,
+            data=data,
+            labels=labels
+        )
+        
+        # Store as active batch
+        self.active_batches[batch_id] = batch
+        self.total_batches_started += 1
+        
+        # Start processing on first stage asynchronously
+        if 0 in self.rpc_workers:
+            worker_name, rpc_worker = self.rpc_workers[0]
+            
+            # Create future for first stage
+            future = rpc_worker.rpc_async().process_batch_rpc(data, batch_id)
+            
+            # Set up continuation for subsequent stages
+            self._setup_pipeline_continuation(future, batch_id, 0)
+        
+        return batch_id
+    
+    def _setup_pipeline_continuation(self, future, batch_id: int, completed_stage: int):
+        """Set up continuation for the next stage in the pipeline."""
+        def continue_pipeline():
+            try:
+                # Get result from completed stage
+                result = future.wait()
+                
+                # Update batch data
+                if batch_id in self.active_batches:
+                    batch = self.active_batches[batch_id]
+                    batch.data = result
+                    batch.current_stage = completed_stage + 1
+                    
+                    # Record completion time for this stage
+                    if completed_stage not in batch.stage_times:
+                        batch.stage_times[completed_stage] = (batch.start_time, time.time())
+                    
+                    # Check if there's a next stage
+                    next_stage = completed_stage + 1
+                    if next_stage < len(self.shards) and next_stage in self.rpc_workers:
+                        # Start next stage
+                        worker_name, rpc_worker = self.rpc_workers[next_stage]
+                        next_future = rpc_worker.rpc_async().process_batch_rpc(result, batch_id)
+                        
+                        # Set up continuation for next stage
+                        self._setup_pipeline_continuation(next_future, batch_id, next_stage)
+                    else:
+                        # Pipeline complete
+                        batch.completed = True
+                        self.completed_batches[batch_id] = batch
+                        self.total_batches_completed += 1
+                        
+                        # Remove from active batches
+                        if batch_id in self.active_batches:
+                            del self.active_batches[batch_id]
+                            
+                        self.logger.debug(f"Batch {batch_id} completed pipeline")
+                        
+            except Exception as e:
+                self.logger.error(f"Error in pipeline continuation for batch {batch_id}: {e}")
+                # Mark batch as completed with error
+                if batch_id in self.active_batches:
+                    batch = self.active_batches[batch_id]
+                    batch.completed = True
+                    self.completed_batches[batch_id] = batch
+                    del self.active_batches[batch_id]
+        
+        # Add callback to execute when future completes
+        future.add_done_callback(lambda f: continue_pipeline())
+    
+    def get_completed_batch(self, batch_id: int, timeout: Optional[float] = None) -> Optional[torch.Tensor]:
+        """Get a completed batch result, waiting if necessary."""
+        start_time = time.time()
+        
+        while True:
+            # Check if batch is completed
+            if batch_id in self.completed_batches:
+                batch = self.completed_batches[batch_id]
+                del self.completed_batches[batch_id]
+                return batch.data
+            
+            # Check timeout
+            if timeout is not None and (time.time() - start_time) > timeout:
+                return None
+            
+            # Small sleep to avoid busy waiting
+            time.sleep(0.01)
+    
+    def process_batch_rpc_pipelined(self, data: torch.Tensor, labels: Optional[torch.Tensor] = None) -> torch.Tensor:
+        """Process a batch through the pipelined RPC system (blocking interface for compatibility)."""
+        # Start the batch
+        batch_id = self.start_batch_rpc_pipelined(data, labels)
+        
+        # Wait for completion
+        result = self.get_completed_batch(batch_id, timeout=300.0)  # 5 minute timeout
+        
+        if result is None:
+            self.logger.error(f"Timeout waiting for batch {batch_id}")
+            return torch.zeros_like(data)  # Return zeros on timeout
+        
+        return result
     
     def _collect_completed_batches(self):
         """Collect completed batches from the pipeline."""

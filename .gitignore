@@ -274,3 +274,7 @@ profiling/OLD_layer_profiler.py
 test_updated_workers
 verify_metrics
 single_test_metrics
+
+# Project-specific documentation to ignore
+PIPELINING_EXPLANATION.md
+RPC_DOC.md

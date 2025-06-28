@@ -99,7 +99,7 @@ class EnhancedDistributedModel(nn.Module):
     def __init__(self, model_type: str, num_splits: int, workers: List[str],
                  num_classes: int = 10, metrics_collector: Optional[EnhancedMetricsCollector] = None,
                  use_intelligent_splitting: bool = True, use_pipelining: bool = False,
-                 models_dir: str = "."):
+                 models_dir: str = ".", split_block: Optional[int] = None):
         super().__init__()
         self.model_type = model_type
         self.num_splits = num_splits
@@ -109,6 +109,7 @@ class EnhancedDistributedModel(nn.Module):
         self.use_intelligent_splitting = use_intelligent_splitting
         self.use_pipelining = use_pipelining
         self.models_dir = models_dir
+        self.split_block = split_block
         
         self.logger = logging.getLogger(__name__)
         
@@ -206,7 +207,11 @@ class EnhancedDistributedModel(nn.Module):
         self.logger.info(f"Model has {total_blocks} feature blocks")
         
         # Calculate split point based on number of splits requested
-        if self.num_splits == 1:
+        if self.split_block is not None:
+            # Use user-specified split block
+            split_at_block = self.split_block
+            self.logger.info(f"Using user-specified split block: {split_at_block}")
+        elif self.num_splits == 1:
             # For MobileNetV2: split at block 8 (like reference implementation)
             if self.model_type.lower() == 'mobilenetv2':
                 split_at_block = 8
@@ -283,7 +288,7 @@ class EnhancedDistributedModel(nn.Module):
         """Forward pass through the distributed model."""
         if self.use_pipelining and self.pipeline_manager:
             # Use pipelined execution
-            return self.pipeline_manager.process_batch_rpc(x)
+            return self.pipeline_manager.process_batch_rpc_pipelined(x)
         else:
             # Sequential execution (original approach)
             return self._forward_sequential(x, batch_id)
@@ -295,18 +300,25 @@ class EnhancedDistributedModel(nn.Module):
         for i, shard_rref in enumerate(self.worker_rrefs):
             self.logger.debug(f"Processing through shard {i}")
             
-            # Measure RPC latency and throughput
+            # Measure RPC latency (includes computation)
             start_time = time.time()
             current_tensor = shard_rref.rpc_sync().forward(current_tensor)
             end_time = time.time()
             
-            # Record network metrics
+            # Record RPC metrics (computation + network)
             if self.metrics_collector:
-                rpc_latency_ms = (end_time - start_time) * 1000
-                data_size_bytes = current_tensor.numel() * current_tensor.element_size()
-                throughput_mbps = (data_size_bytes / (1024 * 1024)) / (rpc_latency_ms / 1000) if rpc_latency_ms > 0 else 0
+                rpc_total_ms = (end_time - start_time) * 1000
                 
-                self.metrics_collector.record_network_metrics(rpc_latency_ms, throughput_mbps)
+                # Estimate network overhead (serialization + transfer)
+                # Based on analysis: ~14ms for 0.77MB on gigabit network
+                tensor_size_mb = (current_tensor.numel() * current_tensor.element_size()) / (1024 * 1024)
+                estimated_network_ms = 0.5 + (tensor_size_mb * 0.3) + (tensor_size_mb * 8 / 940) * 1000 * 2  # RTT + serialize + transfer
+                
+                # The rest is computation time
+                estimated_computation_ms = max(0, rpc_total_ms - estimated_network_ms)
+                
+                # Record as "RPC latency" not "network latency" 
+                self.metrics_collector.record_network_metrics(rpc_total_ms, estimated_network_ms)
         
         return current_tensor
     
@@ -333,7 +345,7 @@ def run_enhanced_inference(rank: int, world_size: int, model_type: str, batch_si
                           num_classes: int, dataset: str, num_test_samples: int,
                           num_splits: int, metrics_dir: str, use_intelligent_splitting: bool = True,
                           use_pipelining: bool = False, num_threads: int = 4,
-                          models_dir: str = "."):
+                          models_dir: str = ".", split_block: Optional[int] = None):
     """
     Run enhanced distributed inference with profiling and pipelining.
     """
@@ -408,7 +420,8 @@ def run_enhanced_inference(rank: int, world_size: int, model_type: str, batch_si
                 metrics_collector=metrics_collector,
                 use_intelligent_splitting=use_intelligent_splitting,
                 use_pipelining=use_pipelining,
-                models_dir=models_dir
+                models_dir=models_dir,
+                split_block=split_block
             )
             
             logger.info("Enhanced distributed model created successfully")
@@ -427,42 +440,141 @@ def run_enhanced_inference(rank: int, world_size: int, model_type: str, batch_si
             num_correct = 0
             batch_count = 0
             
-            with torch.no_grad():
-                for i, (images, labels) in enumerate(test_loader):
-                    if total_images >= num_test_samples:
-                        break
+            if use_pipelining and model.use_pipelining and model.pipeline_manager:
+                # Pipelined inference with multiple batches in flight
+                logger.info("Using PIPELINED inference for maximum throughput")
+                
+                # Configuration for pipelining
+                max_batches_in_flight = 3  # Limit memory usage
+                active_batches = {}  # batch_id -> (images, labels, start_time)
+                
+                with torch.no_grad():
+                    data_iter = iter(test_loader)
+                    batch_id = 0
                     
-                    # Trim batch if necessary
-                    remaining = num_test_samples - total_images
-                    if images.size(0) > remaining:
-                        images = images[:remaining]
-                        labels = labels[:remaining]
+                    # Keep pipeline full
+                    while total_images < num_test_samples:
+                        # Start new batches if we have capacity
+                        while len(active_batches) < max_batches_in_flight and total_images < num_test_samples:
+                            try:
+                                images, labels = next(data_iter)
+                            except StopIteration:
+                                break
+                            
+                            # Trim batch if necessary
+                            remaining = num_test_samples - total_images
+                            if images.size(0) > remaining:
+                                images = images[:remaining]
+                                labels = labels[:remaining]
+                            
+                            # Explicit device placement
+                            images = images.to("cpu")
+                            labels = labels.to("cpu")
+                            
+                            # Start batch tracking
+                            batch_start_time = metrics_collector.start_batch(batch_id, len(images))
+                            
+                            logger.info(f"Starting batch {batch_id + 1} with {len(images)} images (pipeline)")
+                            
+                            # Start batch processing asynchronously
+                            pipeline_batch_id = model.pipeline_manager.start_batch_rpc_pipelined(images, labels)
+                            active_batches[pipeline_batch_id] = (images, labels, batch_start_time, batch_id)
+                            
+                            total_images += len(images)
+                            batch_id += 1
+                        
+                        # Collect completed batches
+                        completed_ids = []
+                        for pid, (orig_images, orig_labels, start_time, tracking_id) in list(active_batches.items()):
+                            # Check if batch is complete (non-blocking)
+                            result = model.pipeline_manager.get_completed_batch(pid, timeout=0.001)
+                            if result is not None:
+                                # Calculate accuracy
+                                _, predicted = torch.max(result.data, 1)
+                                batch_correct = (predicted == orig_labels).sum().item()
+                                num_correct += batch_correct
+                                
+                                batch_accuracy = (batch_correct / len(orig_labels)) * 100.0
+                                
+                                # End batch tracking
+                                metrics_collector.end_batch(tracking_id, accuracy=batch_accuracy)
+                                
+                                logger.info(f"Completed batch {tracking_id + 1} accuracy: {batch_accuracy:.2f}%")
+                                completed_ids.append(pid)
+                                batch_count += 1
+                        
+                        # Remove completed batches
+                        for pid in completed_ids:
+                            del active_batches[pid]
+                        
+                        # Small sleep if no completions to avoid busy waiting
+                        if not completed_ids and len(active_batches) >= max_batches_in_flight:
+                            time.sleep(0.01)
                     
-                    # Explicit device placement for consistency and predictability
-                    images = images.to("cpu")
-                    labels = labels.to("cpu")
-                    
-                    # Start batch tracking
-                    batch_start_time = metrics_collector.start_batch(batch_count, len(images))
-                    
-                    logger.info(f"Processing batch {batch_count + 1} with {len(images)} images")
-                    
-                    # Run inference
-                    output = model(images, batch_id=batch_count)
-                    
-                    # Calculate accuracy
-                    _, predicted = torch.max(output.data, 1)
-                    batch_correct = (predicted == labels).sum().item()
-                    num_correct += batch_correct
-                    total_images += len(images)
-                    
-                    batch_accuracy = (batch_correct / len(labels)) * 100.0
-                    
-                    # End batch tracking
-                    metrics_collector.end_batch(batch_count, accuracy=batch_accuracy)
-                    
-                    logger.info(f"Batch {batch_count + 1} accuracy: {batch_accuracy:.2f}%")
-                    batch_count += 1
+                    # Wait for remaining batches
+                    logger.info("Waiting for final batches to complete...")
+                    while active_batches:
+                        completed_ids = []
+                        for pid, (orig_images, orig_labels, start_time, tracking_id) in list(active_batches.items()):
+                            result = model.pipeline_manager.get_completed_batch(pid, timeout=0.1)
+                            if result is not None:
+                                # Calculate accuracy
+                                _, predicted = torch.max(result.data, 1)
+                                batch_correct = (predicted == orig_labels).sum().item()
+                                num_correct += batch_correct
+                                
+                                batch_accuracy = (batch_correct / len(orig_labels)) * 100.0
+                                
+                                # End batch tracking
+                                metrics_collector.end_batch(tracking_id, accuracy=batch_accuracy)
+                                
+                                logger.info(f"Completed batch {tracking_id + 1} accuracy: {batch_accuracy:.2f}%")
+                                completed_ids.append(pid)
+                                batch_count += 1
+                        
+                        for pid in completed_ids:
+                            del active_batches[pid]
+                
+            else:
+                # Original sequential inference
+                logger.info("Using sequential inference")
+                
+                with torch.no_grad():
+                    for i, (images, labels) in enumerate(test_loader):
+                        if total_images >= num_test_samples:
+                            break
+                        
+                        # Trim batch if necessary
+                        remaining = num_test_samples - total_images
+                        if images.size(0) > remaining:
+                            images = images[:remaining]
+                            labels = labels[:remaining]
+                        
+                        # Explicit device placement for consistency and predictability
+                        images = images.to("cpu")
+                        labels = labels.to("cpu")
+                        
+                        # Start batch tracking
+                        batch_start_time = metrics_collector.start_batch(batch_count, len(images))
+                        
+                        logger.info(f"Processing batch {batch_count + 1} with {len(images)} images")
+                        
+                        # Run inference
+                        output = model(images, batch_id=batch_count)
+                        
+                        # Calculate accuracy
+                        _, predicted = torch.max(output.data, 1)
+                        batch_correct = (predicted == labels).sum().item()
+                        num_correct += batch_correct
+                        total_images += len(images)
+                        
+                        batch_accuracy = (batch_correct / len(labels)) * 100.0
+                        
+                        # End batch tracking
+                        metrics_collector.end_batch(batch_count, accuracy=batch_accuracy)
+                        
+                        logger.info(f"Batch {batch_count + 1} accuracy: {batch_accuracy:.2f}%")
+                        batch_count += 1
             
             elapsed_time = time.time() - start_time
             final_accuracy = (num_correct / total_images) * 100.0 if total_images > 0 else 0.0
@@ -547,8 +659,13 @@ def run_enhanced_inference(rank: int, world_size: int, model_type: str, batch_si
     logger.info(f"NEW Throughput (inter-batch): {efficiency_stats.get('new_pipeline_throughput_ips', 0):.2f} images/sec")
     logger.info(f"Average processing time: {device_summary.get('average_processing_time_ms', 0):.2f}ms")
     logger.info(f"Pipeline utilization: {efficiency_stats.get('average_pipeline_utilization', 0):.2f}")
-    logger.info(f"Network latency: {device_summary.get('avg_network_latency_ms', 0):.2f}ms")
-    logger.info(f"Network throughput: {device_summary.get('avg_throughput_mbps', 0):.2f}Mbps")
+    rpc_total = device_summary.get('avg_network_latency_ms', 0)
+    network_overhead = device_summary.get('avg_throughput_mbps', 0)
+    computation_time = rpc_total - network_overhead
+    
+    logger.info(f"RPC total time: {rpc_total:.2f}ms")
+    logger.info(f"  - Network overhead: {network_overhead:.2f}ms")
+    logger.info(f"  - Worker computation: {computation_time:.2f}ms")
 
 
 def main():
@@ -579,6 +696,8 @@ def main():
                        help="Number of RPC threads")
     parser.add_argument("--disable-intelligent-splitting", action="store_true",
                        help="Disable intelligent splitting (use traditional method)")
+    parser.add_argument("--split-block", type=int, default=None,
+                       help="Specific block number to split at (for MobileNetV2)")
     
     args = parser.parse_args()
     
@@ -604,7 +723,8 @@ def main():
         use_intelligent_splitting=args.use_intelligent_splitting,
         use_pipelining=args.use_pipelining,
         num_threads=args.num_threads,
-        models_dir=args.models_dir
+        models_dir=args.models_dir,
+        split_block=args.split_block
     )
 
 

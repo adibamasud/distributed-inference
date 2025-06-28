@@ -1,0 +1,1 @@
+batch_id,batch_size,start_time,end_time,total_time_ms,pipeline_utilization,accuracy,images_per_second,model_name,num_devices,timestamp

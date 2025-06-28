@@ -1,0 +1,299 @@
+{
+  "model": "mobilenetv2",
+  "block_info": [
+    {
+      "index": 0,
+      "name": "features.0",
+      "type": "Conv2dNormActivation",
+      "params": 928,
+      "cumulative_params": 928,
+      "cumulative_percent": 0.026477429132932672
+    },
+    {
+      "index": 1,
+      "name": "features.1",
+      "type": "InvertedResidual",
+      "params": 896,
+      "cumulative_params": 1824,
+      "cumulative_percent": 0.05204184346817801
+    },
+    {
+      "index": 2,
+      "name": "features.2",
+      "type": "InvertedResidual",
+      "params": 5136,
+      "cumulative_params": 6960,
+      "cumulative_percent": 0.19858071849699505
+    },
+    {
+      "index": 3,
+      "name": "features.3",
+      "type": "InvertedResidual",
+      "params": 8832,
+      "cumulative_params": 15792,
+      "cumulative_percent": 0.4505728026586991
+    },
+    {
+      "index": 4,
+      "name": "features.4",
+      "type": "InvertedResidual",
+      "params": 10000,
+      "cumulative_params": 25792,
+      "cumulative_percent": 0.7358899269359908
+    },
+    {
+      "index": 5,
+      "name": "features.5",
+      "type": "InvertedResidual",
+      "params": 14848,
+      "cumulative_params": 40640,
+      "cumulative_percent": 1.1595287930629135
+    },
+    {
+      "index": 6,
+      "name": "features.6",
+      "type": "InvertedResidual",
+      "params": 14848,
+      "cumulative_params": 55488,
+      "cumulative_percent": 1.5831676591898363
+    },
+    {
+      "index": 7,
+      "name": "features.7",
+      "type": "InvertedResidual",
+      "params": 21056,
+      "cumulative_params": 76544,
+      "cumulative_percent": 2.1839313960681017
+    },
+    {
+      "index": 8,
+      "name": "features.8",
+      "type": "InvertedResidual",
+      "params": 54272,
+      "cumulative_params": 130816,
+      "cumulative_percent": 3.732404492945819
+    },
+    {
+      "index": 9,
+      "name": "features.9",
+      "type": "InvertedResidual",
+      "params": 54272,
+      "cumulative_params": 185088,
+      "cumulative_percent": 5.280877589823537
+    },
+    {
+      "index": 10,
+      "name": "features.10",
+      "type": "InvertedResidual",
+      "params": 54272,
+      "cumulative_params": 239360,
+      "cumulative_percent": 6.829350686701255
+    },
+    {
+      "index": 11,
+      "name": "features.11",
+      "type": "InvertedResidual",
+      "params": 66624,
+      "cumulative_params": 305984,
+      "cumulative_percent": 8.730247495486283
+    },
+    {
+      "index": 12,
+      "name": "features.12",
+      "type": "InvertedResidual",
+      "params": 118272,
+      "cumulative_params": 424256,
+      "cumulative_percent": 12.104750187738668
+    },
+    {
+      "index": 13,
+      "name": "features.13",
+      "type": "InvertedResidual",
+      "params": 118272,
+      "cumulative_params": 542528,
+      "cumulative_percent": 15.479252879991051
+    },
+    {
+      "index": 14,
+      "name": "features.14",
+      "type": "InvertedResidual",
+      "params": 155264,
+      "cumulative_params": 697792,
+      "cumulative_percent": 19.909200678369995
+    },
+    {
+      "index": 15,
+      "name": "features.15",
+      "type": "InvertedResidual",
+      "params": 320000,
+      "cumulative_params": 1017792,
+      "cumulative_percent": 29.03934865524333
+    },
+    {
+      "index": 16,
+      "name": "features.16",
+      "type": "InvertedResidual",
+      "params": 320000,
+      "cumulative_params": 1337792,
+      "cumulative_percent": 38.16949663211667
+    },
+    {
+      "index": 17,
+      "name": "features.17",
+      "type": "InvertedResidual",
+      "params": 473920,
+      "cumulative_params": 1811712,
+      "cumulative_percent": 51.691245785866066
+    },
+    {
+      "index": 18,
+      "name": "features.18",
+      "type": "Conv2dNormActivation",
+      "params": 412160,
+      "cumulative_params": 2223872,
+      "cumulative_percent": 63.45087638007894
+    }
+  ],
+  "results": [
+    {
+      "split_block": 6,
+      "shard1_params": 40640,
+      "shard2_params": 3464232,
+      "shard1_percent": 1.1595287930629135,
+      "shard2_percent": 98.84047120693708,
+      "shard1_time_ms": 48.40766906738281,
+      "shard2_time_ms": 8.627915382385254,
+      "load_balance_score": 0.8217655270619348,
+      "pipeline_time_ms": 48.40766906738281,
+      "sequential_time_ms": 57.035584449768066,
+      "theoretical_speedup": 1.1782344729380652,
+      "intermediate_size_mb": 0.765625
+    },
+    {
+      "split_block": 7,
+      "shard1_params": 55488,
+      "shard2_params": 3449384,
+      "shard1_percent": 1.5831676591898363,
+      "shard2_percent": 98.41683234081017,
+      "shard1_time_ms": 50.79414129257202,
+      "shard2_time_ms": 7.5565290451049805,
+      "load_balance_score": 0.8512322710294539,
+      "pipeline_time_ms": 50.79414129257202,
+      "sequential_time_ms": 58.350670337677,
+      "theoretical_speedup": 1.1487677289705462,
+      "intermediate_size_mb": 0.765625
+    },
+    {
+      "split_block": 8,
+      "shard1_params": 76544,
+      "shard2_params": 3428328,
+      "shard1_percent": 2.1839313960681017,
+      "shard2_percent": 97.8160686039319,
+      "shard1_time_ms": 52.5774359703064,
+      "shard2_time_ms": 6.646969318389893,
+      "load_balance_score": 0.8735775300616822,
+      "pipeline_time_ms": 52.5774359703064,
+      "sequential_time_ms": 59.22440528869629,
+      "theoretical_speedup": 1.1264224699383178,
+      "intermediate_size_mb": 0.3828125
+    },
+    {
+      "split_block": 9,
+      "shard1_params": 130816,
+      "shard2_params": 3374056,
+      "shard1_percent": 3.732404492945819,
+      "shard2_percent": 96.26759550705418,
+      "shard1_time_ms": 50.90949535369873,
+      "shard2_time_ms": 6.159877777099609,
+      "load_balance_score": 0.8790033620584283,
+      "pipeline_time_ms": 50.90949535369873,
+      "sequential_time_ms": 57.06937313079834,
+      "theoretical_speedup": 1.1209966379415717,
+      "intermediate_size_mb": 0.3828125
+    },
+    {
+      "split_block": 10,
+      "shard1_params": 185088,
+      "shard2_params": 3319784,
+      "shard1_percent": 5.280877589823537,
+      "shard2_percent": 94.71912241017645,
+      "shard1_time_ms": 51.356284618377686,
+      "shard2_time_ms": 5.650064945220947,
+      "load_balance_score": 0.8899829886993209,
+      "pipeline_time_ms": 51.356284618377686,
+      "sequential_time_ms": 57.00634956359863,
+      "theoretical_speedup": 1.110017011300679,
+      "intermediate_size_mb": 0.3828125
+    },
+    {
+      "split_block": 11,
+      "shard1_params": 239360,
+      "shard2_params": 3265512,
+      "shard1_percent": 6.829350686701255,
+      "shard2_percent": 93.17064931329875,
+      "shard1_time_ms": 53.60032796859741,
+      "shard2_time_ms": 5.045473575592041,
+      "load_balance_score": 0.9058686062789016,
+      "pipeline_time_ms": 53.60032796859741,
+      "sequential_time_ms": 58.64580154418945,
+      "theoretical_speedup": 1.0941313937210984,
+      "intermediate_size_mb": 0.3828125
+    },
+    {
+      "split_block": 12,
+      "shard1_params": 305984,
+      "shard2_params": 3198888,
+      "shard1_percent": 8.730247495486283,
+      "shard2_percent": 91.26975250451372,
+      "shard1_time_ms": 54.594807624816895,
+      "shard2_time_ms": 4.454348087310791,
+      "load_balance_score": 0.9184107741908042,
+      "pipeline_time_ms": 54.594807624816895,
+      "sequential_time_ms": 59.049155712127686,
+      "theoretical_speedup": 1.081589225809196,
+      "intermediate_size_mb": 0.57421875
+    }
+  ],
+  "best_balance": {
+    "split_block": 6,
+    "shard1_params": 40640,
+    "shard2_params": 3464232,
+    "shard1_percent": 1.1595287930629135,
+    "shard2_percent": 98.84047120693708,
+    "shard1_time_ms": 48.40766906738281,
+    "shard2_time_ms": 8.627915382385254,
+    "load_balance_score": 0.8217655270619348,
+    "pipeline_time_ms": 48.40766906738281,
+    "sequential_time_ms": 57.035584449768066,
+    "theoretical_speedup": 1.1782344729380652,
+    "intermediate_size_mb": 0.765625
+  },
+  "best_param_balance": {
+    "split_block": 12,
+    "shard1_params": 305984,
+    "shard2_params": 3198888,
+    "shard1_percent": 8.730247495486283,
+    "shard2_percent": 91.26975250451372,
+    "shard1_time_ms": 54.594807624816895,
+    "shard2_time_ms": 4.454348087310791,
+    "load_balance_score": 0.9184107741908042,
+    "pipeline_time_ms": 54.594807624816895,
+    "sequential_time_ms": 59.049155712127686,
+    "theoretical_speedup": 1.081589225809196,
+    "intermediate_size_mb": 0.57421875
+  },
+  "fastest_pipeline": {
+    "split_block": 6,
+    "shard1_params": 40640,
+    "shard2_params": 3464232,
+    "shard1_percent": 1.1595287930629135,
+    "shard2_percent": 98.84047120693708,
+    "shard1_time_ms": 48.40766906738281,
+    "shard2_time_ms": 8.627915382385254,
+    "load_balance_score": 0.8217655270619348,
+    "pipeline_time_ms": 48.40766906738281,
+    "sequential_time_ms": 57.035584449768066,
+    "theoretical_speedup": 1.1782344729380652,
+    "intermediate_size_mb": 0.765625
+  }
+}
