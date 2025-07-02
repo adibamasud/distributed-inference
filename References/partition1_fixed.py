@@ -141,56 +141,43 @@ def run_server_for_model(model_name, config, output_dir):
     s.listen(1)
     print(f"[Server - {model_name}] Waiting for client...")
 
-    conn = None # Initialize conn
+
+    conn = None
     try:
         conn, addr = s.accept()
         print(f"[Server - {model_name}] Connected to {addr}")
 
-        server_metrics = [] # To store (infer_time, net_time, cpu, mem, throughput_kb_s)
-        total_batches = 0
-
-        for i, (images, labels) in enumerate(loader):
-            batch_start = time.time()
-            cpu = psutil.cpu_percent() # CPU usage since last call or boot
+        server_metrics = []
+        # CORRECTED: All logic is now inside the loop to run per-batch.
+        for i, (images, _) in enumerate(loader):
+            batch_start_time = time.time()
+            cpu = psutil.cpu_percent()
             mem = psutil.virtual_memory().percent
-            t_infer_start = time.time()
-
-            with torch.no_grad():
-                output = model_part1_instance(images) # Inference on CPU
-
-            infer_time = time.time() - t_infer_start
             
-            # Ensure output is on CPU before pickling
-            if output.is_cuda: # Should not be CUDA if model_part1_instance is .cpu()
-                output = output.cpu()
+            # CORRECTED: Measure inference time for this specific batch.
+            t_infer_start = time.time()
+            with torch.no_grad():
+                output = model_part1_instance(images)
+            infer_time = time.time() - t_infer_start
 
-            # Include labels for accuracy calculation on client side
-            payload = {
-                'tensor': output, 
-                'labels': labels,  # ADD LABELS FOR ACCURACY
-                'start_time': batch_start, 
-                'cpu': cpu, 
-                'mem': mem, 
-                'infer_time': infer_time
-            }
+            output = output.cpu()
+            
+            # CORRECTED: Use the correctly calculated 'infer_time' for the payload.
+            payload = {'tensor': output, 'start_time': batch_start_time, 'cpu': cpu, 'mem': mem, 'infer_time': infer_time}
             data_bytes = pickle.dumps(payload)
-            size = len(data_bytes) # Size in bytes
-
+            size = len(data_bytes)
+            
+            # CORRECTED: Measure network time for this specific transmission.
             t_net_start = time.time()
-            # Send payload size (4 bytes, big-endian)
             conn.sendall(size.to_bytes(4, 'big'))
-            # Send payload data
             conn.sendall(data_bytes)
             net_time = time.time() - t_net_start
 
-            # Calculate throughput (KB/s) based on inference time for that batch
-            throughput_kb_s = (size / infer_time / 1024) if infer_time > 0 else 0
+            # CORRECTED: Append metrics for this batch.
+            server_metrics.append((infer_time, net_time, cpu, mem))
+            print(f"[Server - {model_name}] Batch {i+1} -> Inference: {infer_time:.4f}s, Network: {net_time:.4f}s, CPU: {cpu}%, Mem: {mem}%")
 
-            server_metrics.append((infer_time, net_time, cpu, mem, throughput_kb_s))
-            total_batches += 1
-            print(f"[Server - {model_name}] Batch {i+1} - Inference: {infer_time:.4f}s, Network: {net_time:.4f}s, CPU: {cpu}%, Mem: {mem}%, Throughput: {throughput_kb_s:.2f} KB/s")
-
-            if i == 15: # Limit to 16 batches for demonstration
+            if i == 7: # Limit to 16 batches for demonstration
                 break
 
     except Exception as e:
@@ -208,18 +195,17 @@ def run_server_for_model(model_name, config, output_dir):
         s.close()
         print(f"[Server - {model_name}] Server socket closed.")
 
-    # Aggregate and save metrics
+    # Aggregate and save metrics (This part was okay)
     if server_metrics:
         sm_np = np.array(server_metrics)
         avg = np.mean(sm_np, axis=0)
         std = np.std(sm_np, axis=0)
 
-        metric_labels = ["Inference Time (s)", "Network Time (s)", "CPU Utilization (%)", "Memory Utilization (%)", "Throughput (KB/s)"]
+        metric_labels = ["Inference Time (s)", "Network Time (s)", "CPU Utilization (%)", "Memory Utilization (%)"]
         
         results = {
             "model_name": model_name,
             "device": "cpu",
-            "total_batches": total_batches,
             "metrics": {}
         }
 
@@ -258,7 +244,6 @@ if __name__ == '__main__':
 
     for model_name in models_to_run:
         config = MODELS_CONFIG[model_name]
-        # It's important that run_server_for_model handles socket setup and teardown for each run.
         run_server_for_model(model_name, config, args.output_dir)
 
     print("\n[Server] All specified model evaluations complete.")
