@@ -129,9 +129,6 @@ def load_cifar10_model(model_name, config):
     return full_model
 
 def recvall(sock, length):
-    """
-    Helper function to ensure all bytes are received from the socket.
-    """
     data = b''
     while len(data) < length:
         more = sock.recv(length - len(data))
@@ -141,123 +138,164 @@ def recvall(sock, length):
     return data
 
 def run_client_for_model(model_name, config, server_host, output_dir):
-    """
-    Runs the client logic for a specific model part and saves metrics.
-    """
     print(f"\n[Client] --- Running for Model: {model_name} ---")
-
-    # Load the model with CIFAR-10 configuration
-    full_model = load_cifar10_model(model_name, config)
-    model_part2_instance = ModelPart(config["part2_definition"](full_model)).eval().cpu()
+    model_part2_instance = ModelPart(config["part2_definition"](config["load_function"]())).eval().cpu()
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         s.connect((server_host, PORT))
         print(f"[Client - {model_name}] Connected to server at {server_host}:{PORT}")
-    except ConnectionRefusedError:
-        print(f"[Client - {model_name}] Connection refused. Is the server running at {server_host}:{PORT}?")
-        return
     except Exception as e:
-        print(f"[Client - {model_name}] Error connecting to server: {e}")
+        print(f"[Client - {model_name}] Connection error: {e}")
         return
 
-    combined_metrics = [] # To store (infer1, infer2, cpu1, cpu2, mem1, mem2, total_e2e, throughput, accuracy)
-    total_correct = 0
-    total_samples = 0
+    # Store all individual batch metrics for saving
+    all_batch_metrics_raw = []
+    # To store the batch_start_time for system-wide throughput calculation
+    inter_batch_start_times = []
+    first_batch_size = None # To capture the batch size for throughput calculation
 
     try:
         batch_count = 0
-        while True: # Loop indefinitely until end-of-data signal or error
-            # Receive size of payload
+
+        while True:
             size_bytes = recvall(s, 4)
             size = int.from_bytes(size_bytes, 'big')
-
-            if size == 0: # Explicit end-of-data signal from server
+            if size == 0:
                 print(f"[Client - {model_name}] Received end-of-data signal from server.")
-                break # Exit the loop
+                break
 
-            # Receive payload data
-            data = recvall(s, size)
-            payload = pickle.loads(data)
+            try:
+                data = recvall(s, size)
+                payload = pickle.loads(data)
+            except Exception as e:
+                print(f"[Client - {model_name}] Failed to receive/parse payload: {e}")
+                continue
 
-            tensor = payload['tensor']
-            labels = payload['labels']  # GET LABELS FOR ACCURACY
-            batch_start_time = payload['start_time']
-            cpu1, mem1, infer1 = payload['cpu'], payload['mem'], payload['infer_time']
+            try:
+                tensor = payload['tensor']
+                current_batch_start_time = payload['start_time'] # This is tA in the diagram for the current batch
+                cpu1, mem1, infer1 = payload['cpu'], payload['mem'], payload['infer_time']
 
-            cpu2 = psutil.cpu_percent() # CPU usage on client since last call
-            mem2 = psutil.virtual_memory().percent # Memory usage on client
-            t_infer_start = time.time()
+                # Capture the batch size from the first received tensor
+                if first_batch_size is None:
+                    first_batch_size = tensor.size(0) #print the result
 
-            with torch.no_grad():
-                out = model_part2_instance(tensor) # Perform inference on client
+                cpu2 = psutil.cpu_percent()
+                mem2 = psutil.virtual_memory().percent
 
-            infer2 = time.time() - t_infer_start
-            
-            # Calculate accuracy
-            _, predicted = torch.max(out.data, 1)
-            batch_correct = (predicted == labels).sum().item()
-            total_correct += batch_correct
-            total_samples += labels.size(0)
-            batch_accuracy = (batch_correct / labels.size(0)) * 100.0
-            
-            # Calculate throughput (items/second or batch_size/infer_time_pi2)
-            throughput = (tensor.size(0) / infer2) if infer2 > 0 else 0 
+                with torch.no_grad():
+                    infer2_start = time.time()
+                    out = model_part2_instance(tensor)
+                    infer2 = time.time() - infer2_start
 
-            total_end_to_end = time.time() - batch_start_time # Total time for this batch
+                # Record the start time of this batch for inter-batch time calculation
+                inter_batch_start_times.append(time.time())
 
-            combined_metrics.append((infer1, infer2, cpu1, cpu2, mem1, mem2, total_end_to_end, throughput, batch_accuracy))
-            batch_count += 1
+                batch_infer2_throughput = (tensor.size(0) / infer2) if infer2 > 0 else 0
+                total_end_to_end = time.time() - current_batch_start_time
 
-            print(f"[Client - {model_name}] Batch {batch_count} - Pi1 Infer: {infer1:.4f}s, Pi2 Infer: {infer2:.4f}s, "
-                  f"Total E2E: {total_end_to_end:.4f}s, Throughput: {throughput:.4f} samples/s, Accuracy: {batch_accuracy:.2f}%")
-            
-            if batch_count >= 16: # Client-side limit to match server's 16 batches
-                print(f"[Client - {model_name}] Processed {batch_count} batches, expecting server to send end signal now.")
+                # Store individual batch metrics in a dictionary for clarity
+                current_batch_data = {
+                    "batch_number": batch_count + 1,
+                    "pi1_inference_time_s": infer1,
+                    "pi2_inference_time_s": infer2,
+                    "pi1_cpu_utilization_percent": cpu1,
+                    "pi2_cpu_utilization_percent": cpu2,
+                    "pi1_memory_utilization_percent": mem1,
+                    "pi2_memory_utilization_percent": mem2,
+                    "total_end_to_end_time_s": total_end_to_end,
+                    "current_pi2_throughput_samples_per_s": batch_infer2_throughput,
+                    "batch_start_time": current_batch_start_time # For debugging/validation of inter-batch times
+                }
+                all_batch_metrics_raw.append(current_batch_data)
+                
+                batch_count += 1
+
+                print(f"[Client - {model_name}] Batch {batch_count} - Pi1 Infer: {infer1:.4f}s, Pi2 Infer: {infer2:.4f}s, End-to-End: {total_end_to_end:.4f}s, Current Pi2 Throughput: {batch_infer2_throughput:.2f} samples/s")
+
+                if batch_count >= 8: # This seems like an arbitrary limit, consider removing for full data collection
+                    print(f"[Client - {model_name}] Processed {batch_count} batches.")
+            except Exception as e:
+                print(f"[Client - {model_name}] Error during inference: {e}")
+                continue
 
     except EOFError:
-        print(f"[Client - {model_name}] Server closed connection unexpectedly or sent incomplete data stream.")
+        print(f"[Client - {model_name}] Server closed connection unexpectedly.")
     except Exception as e:
-        print(f"[Client - {model_name}] Error during data reception or inference: {e}")
+        print(f"[Client - {model_name}] Unexpected error: {e}")
     finally:
         s.close()
         print(f"[Client - {model_name}] Connection closed.")
 
-    # Calculate overall accuracy
-    overall_accuracy = (total_correct / total_samples * 100.0) if total_samples > 0 else 0.0
-    print(f"[Client - {model_name}] Overall accuracy: {overall_accuracy:.2f}% ({total_correct}/{total_samples})")
-
-    # Aggregate and save metrics
-    if combined_metrics:
-        cm_np = np.array(combined_metrics)
+    if all_batch_metrics_raw:
+        # Prepare the metrics for averaging and standard deviation calculation
+        # This creates a NumPy array from the collected raw data
+        # We need to ensure the order matches metric_labels
+        data_for_numpy = []
+        for batch_data in all_batch_metrics_raw:
+            data_for_numpy.append([
+                batch_data["pi1_inference_time_s"],
+                batch_data["pi2_inference_time_s"],
+                batch_data["pi1_cpu_utilization_percent"],
+                batch_data["pi2_cpu_utilization_percent"],
+                batch_data["pi1_memory_utilization_percent"],
+                batch_data["pi2_memory_utilization_percent"],
+                batch_data["total_end_to_end_time_s"],
+                batch_data["current_pi2_throughput_samples_per_s"]
+            ])
+        
+        cm_np = np.array(data_for_numpy)
         avg = np.mean(cm_np, axis=0)
         std = np.std(cm_np, axis=0)
+
+        # --- Recalculating Throughput based on Image Definition ---
+        calculated_inter_batch_times = []
+        if len(inter_batch_start_times) > 1:
+            for i in range(1, len(inter_batch_start_times)):
+                calculated_inter_batch_times.append(inter_batch_start_times[i] - inter_batch_start_times[i-1])
+
+        image_inference_throughput = 0.0
+        if calculated_inter_batch_times and first_batch_size is not None:
+            average_inter_batch_time = np.mean(calculated_inter_batch_times)
+            if average_inter_batch_time > 0:
+                batch_throughput = 1 / average_inter_batch_time
+                image_inference_throughput = first_batch_size * batch_throughput
+            else:
+                print(f"[Client - {model_name}] Warning: Average inter-batch time is zero, cannot calculate image inference throughput.")
+        else:
+            print(f"[Client - {model_name}] Warning: Not enough batch data to calculate image inference throughput or batch size unknown.")
 
         metric_labels = [
             "Pi1 Inference Time (s)", "Pi2 Inference Time (s)",
             "Pi1 CPU Utilization (%)", "Pi2 CPU Utilization (%)",
             "Pi1 Memory Utilization (%)", "Pi2 Memory Utilization (%)",
-            "Total End-to-End Time (s)", "Throughput (samples/s)",
-            "Batch Accuracy (%)"
+            "Total End-to-End Time (s)", "Current Pi2 Throughput (samples/s)"
         ]
-        
+
         results = {
             "model_name": model_name,
             "device": "cpu",
             "server_host": server_host,
-            "overall_accuracy": overall_accuracy,
-            "total_samples": total_samples,
-            "metrics": {}
+            "overall_metrics_summary": {}, # Store averages and std devs here
+            "individual_batch_metrics": all_batch_metrics_raw, # Store all raw batch data here
+            "calculated_image_inference_throughput": {
+                "average": float(image_inference_throughput),
+                "std_dev": 0.0 # This is a single computed value, std_dev not applicable in the same context
+            }
         }
 
-        print(f"\n[Client - {model_name}] === AVERAGES WITH STANDARD DEVIATION ===")
+        print(f"\n[Client - {model_name}] === OVERALL AVERAGES WITH STANDARD DEVIATION ===")
         for i, label in enumerate(metric_labels):
             print(f"{label}: {avg[i]:.4f} +/- {std[i]:.4f}")
-            results["metrics"][label.replace(" ", "_").replace("(", "").replace(")", "")] = {
+            results["overall_metrics_summary"][label.replace(" ", "_").replace("(", "").replace(")", "")] = {
                 "average": float(avg[i]),
                 "std_dev": float(std[i])
             }
         
+        print(f"Image Inference Throughput (overall): {image_inference_throughput:.4f} samples/s")
+
+
         output_filepath = os.path.join(output_dir, f"{config['output_filename_prefix']}_metrics.json")
         with open(output_filepath, 'w') as f:
             json.dump(results, f, indent=4)
@@ -265,32 +303,25 @@ def run_client_for_model(model_name, config, server_host, output_dir):
     else:
         print(f"[Client - {model_name}] No metrics collected for {model_name}.")
 
-
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Run client-side inference for various PyTorch models and save metrics.")
-    parser.add_argument("--output_dir", type=str, default="client_metrics",
-                        help="Directory to save the JSON metric files.")
-    parser.add_argument("--models", nargs='*', default=["all"],
-                        help="List of models to run (e.g., AlexNet InceptionV3). Use 'all' to run all models.")
-    parser.add_argument("--host", type=str, default=HOST,
-                        help=f"The IP address of the server (default: {HOST}).")
+    parser = argparse.ArgumentParser(description="Run client-side inference for PyTorch models and save metrics.")
+    parser.add_argument("--output_dir", type=str, default="client_metrics")
+    parser.add_argument("--models", nargs='*', default=["all"])
+    parser.add_argument("--host", type=str, default=HOST)
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
 
-    models_to_run = MODELS_CONFIG.keys()
-    if "all" not in args.models:
-        models_to_run = [m for m in args.models if m in MODELS_CONFIG]
-        if not models_to_run:
-            print("No valid models selected. Please choose from:", list(MODELS_CONFIG.keys()))
-            exit()
+    models_to_run = MODELS_CONFIG.keys() if "all" in args.models else [m for m in args.models if m in MODELS_CONFIG]
+    if not models_to_run:
+        print("No valid models selected. Available:", list(MODELS_CONFIG.keys()))
+        exit()
 
     print(f"Client will attempt to connect to server at {args.host}:{PORT}")
-    print("Please ensure the server (partition1_fixed.py) is running and configured correctly.")
+    print("Ensure the server is running.")
 
     for model_name in models_to_run:
         config = MODELS_CONFIG[model_name]
-        # Run client for each model sequentially
         run_client_for_model(model_name, config, args.host, args.output_dir)
 
     print("\n[Client] All specified model evaluations complete.")
